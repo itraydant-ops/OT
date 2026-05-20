@@ -77,35 +77,98 @@ td input[type="text"].detail-input { text-align: left; }
 .note { font-size: 11px; color: #9ca3af; margin-top: 6px; padding-left: 4px; }
 
 @media print {
-    /* 1. กำหนดขนาดหน้ากระดาษ A4 แนวตั้ง และตั้งค่า Margin */
+    /* 1. ตั้งค่าหน้ากระดาษ A4 แนวตั้ง และปรับระยะขอบแบบประหยัดพื้นที่ */
     @page {
         size: A4 portrait;
-        margin: 10mm 15mm 10mm 15mm; /* บน ขวา ล่าง ซ้าย */
+        margin: 8mm 8mm 8mm 8mm; /* ลดระยะขอบเหลือ 8 มิลลิเมตร เพิ่มพื้นที่แนวตั้ง */
     }
 
-    /* 2. บังคับให้ Container หลัก ขยายเต็มความกว้างหน้ากระดาษ */
-    body, .container, .main-content {
-        width: 100% !important;
+    /* 2. บังคับรีเซ็ตพื้นหลังและย่อฟอนต์ภาพรวมลง เพื่อล็อกให้จบในหน้าเดียว */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11px !important; /* ปรับลดขนาดตัวอักษรลง 1px ช่วยลดความสูงภาพรวม */
+        line-height: 1.2 !important;
+    }
+    .page {
         max-width: 100% !important;
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
     }
+    .card {
+        background: #fff !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 5px 0 !important; /* บีบพื้นที่เว้นวรรคบน-ล่างของแต่ละกล่องให้แคบลง */
+        margin-bottom: 8px !important;
+    }
 
-    /* 3. จัดการตารางที่มีปัญหาตกขอบ */
+    /* 3. ลบขอบมนและเงาของตาราง ป้องกันตารางบีบตัว */
+    .table-wrap {
+        overflow: visible !important;
+        border: 1px solid #e2e4e9 !important;
+        border-radius: 0 !important;
+    }
     table {
         width: 100% !important;
-        table-layout: fixed; /* บังคับควบคุมความกว้างคอลัมน์ */
-        word-wrap: break-word; /* ให้ตัวหนังสือขึ้นบรรทัดใหม่ถ้าจอกระดาษไม่พอ */
+        max-width: 100% !important;
+        table-layout: fixed !important; /* เปิดระบบล็อกความกว้างคอลัมน์อัตโนมัติ */
+        border-collapse: collapse !important;
     }
-
-    /* 4. ซ่อนแถบ Scrollbar ที่อาจจะติดมาตอนพิมพ์ */
-    .table-responsive, :::-webkit-scrollbar {
-        overflow: visible !important;
+    
+    /* บังคับลบ scrollbar ทิ้งอย่างเด็ดขาด */
+    .table-responsive, ::-webkit-scrollbar {
         display: none !important;
+        overflow: visible !important;
     }
 
-    /* 5. ซ่อนปุ่มที่ไม่จำเป็นต้องอยู่บนกระดาษ เช่น ปุ่ม "เพิ่มแถว" */
-    button, .btn, .add-row-btn {
+    /* 4. เคลียร์กล่อง Input และ Select ให้แสดงเป็นข้อความราบเรียบ */
+    td input, td select, .field input, .field select {
+        font-size: 11px !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        height: auto !important; /* ปล่อยความสูงอิสระไม่ให้กล่องดันแถวตารางหนาเกินไป */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    /* 5. ล็อกเปอร์เซ็นต์ความกว้างคอลัมน์ของตารางปฏิบัติงานอย่างเข้มงวด */
+    /* ครั้งที่(4%) วัน(6%) วันที่(11%) เริ่ม(8%) สิ้นสุด(8%) รวม(7%) อัตรา(8%) รายละเอียด(34%) อนุมัติ(14%) */
+    table th:nth-child(1), table td:nth-child(1) { width: 4% !important; }
+    table th:nth-child(2), table td:nth-child(2) { width: 6% !important; }
+    table th:nth-child(3), table td:nth-child(3) { width: 11% !important; }
+    table th:nth-child(4), table td:nth-child(4) { width: 8% !important; }
+    table th:nth-child(5), table td:nth-child(5) { width: 8% !important; }
+    table th:nth-child(6), table td:nth-child(6) { width: 7% !important; }
+    table th:nth-child(7), table td:nth-child(7) { width: 8% !important; }
+    table th:nth-child(8), table td:nth-child(8) { width: 34% !important; text-align: left !important; } 
+    table th:nth-child(9), table td:nth-child(9) { width: 14% !important; }
+
+    /* เคลียร์ตารางสรุปเงิน (Summary) ด้านล่างให้ขยับอิสระ ไม่โดนสูตรสัดส่วนด้านบนเบี้ยว */
+    .summary-wrap table, .summary-wrap th, .summary-wrap td {
+        width: auto !important;
+        table-layout: auto !important;
+    }
+    .summary-rate input {
+        border: 1px solid #e2e4e9 !important;
+        width: 50px !important;
+        text-align: center !important;
+    }
+
+    /* บีบกล่องรวมชั่วโมงด้านบนตารางสรุปให้กะทัดรัดขึ้น */
+    .total-bar {
+        padding: 6px 12px !important;
+        margin: 10px 0 0 !important;
+    }
+    .total-bar strong {
+        font-size: 16px !important;
+    }
+
+    /* 6. ซ่อนส่วนตกแต่งและปุ่มแอคชันที่ไม่เกี่ยวข้องกับการพิมพ์ออกไป */
+    .btn-add, .btn-danger, .btn-primary, .actions, .note {
         display: none !important;
     }
 }
