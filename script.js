@@ -27,6 +27,27 @@ function addRow() {
   `;
   tbody.appendChild(tr);
 }
+function removeLastRow() {
+    // เลือกแถวทั้งหมดที่มีอยู่ใน tbody ของตารางปฏิบัติงาน
+    // (ปรับเปลี่ยน Selector ให้ตรงกับโครงสร้างตารางหลักของคุณได้ครับ)
+    let rows = document.querySelectorAll('tbody tr');
+    
+    // ตั้งเงื่อนไขป้องกัน: ป้องกันไม่ให้ลบจนเกลี้ยงตาราง อย่างน้อยต้องเหลือไว้ 1 แถวเริ่มต้น
+    if (rows.length > 1) {
+        // ลบแถวตัวสุดท้ายสุดออก (.length - 1)
+        rows[rows.length - 1].remove();
+        
+        // 🔥 สำคัญมาก: เรียกฟังก์ชันคำนวณผลรวมชั่วโมงและเงินใหม่ตรงนี้
+        // ให้เปลี่ยนชื่อฟังก์ชันด้านล่างนี้ให้ตรงกับชื่อฟังก์ชันคำนวณเดิมในระบบของคุณนะครับ
+        if (typeof calculateTotals === "function") {
+            calculateTotals();
+        } else if (typeof updateTotals === "function") {
+            updateTotals();
+        }
+    } else {
+        alert('ต้องมีรายการปฏิบัติงานล่วงเวลาอย่างน้อย 1 แถวครับ');
+    }
+}
 
 function autoFillDay(rid) {
   const dateEl = document.getElementById('date-' + rid);

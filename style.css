@@ -43,6 +43,26 @@ td input[type="text"].detail-input { text-align: left; }
 
 /* Buttons */
 .btn-add { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed #2d6a9f; border-radius: 8px; background: transparent; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #2d6a9f; font-weight: 500; transition: all 0.2s; margin-top: 12px; }
+/* สไตล์ปุ่มลดแถวสีแดงตอนแสดงบนหน้าจอปกติ */
+.btn-danger-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1.5px dashed #dc2626; /* เส้นประสีแดง */
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Sarabun', sans-serif;
+    color: #dc2626;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-top: 12px;
+    margin-left: 8px; /* เว้นระยะห่างจากปุ่มเพิ่มแถว */
+}
+
+.btn-danger-action:hover {background: #fef2f2;border-style: solid; /* เปลี่ยนเป็นเส้นทึบเวลาเอาเมาส์ไปชี้ */}
 .btn-add:hover { background: #eff6ff; border-style: solid; }
 .btn-danger { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: 1.5px solid #fca5a5; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #dc2626; font-weight: 500; transition: all 0.2s; }
 .btn-danger:hover { background: #fef2f2; }
