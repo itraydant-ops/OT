@@ -44,13 +44,7 @@ td input[type="text"].detail-input { text-align: left; }
 /* Buttons */
 .btn-add { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed #2d6a9f; border-radius: 8px; background: transparent; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #2d6a9f; font-weight: 500; transition: all 0.2s; margin-top: 12px; }
 /* สไตล์ปุ่มลดแถวสีแดงตอนแสดงบนหน้าจอปกติ */
-.btn-danger-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border: 1.5px dashed #dc2626; /* เส้นประสีแดง */
-    border-radius: 8px;
+.btn-danger-action {display: inline-flex;align-items: center;gap: 6px; padding: 8px 16px;border: 1.5px dashed #dc2626; /* เส้นประสีแดง */border-radius: 8px;
     background: #fff;
     cursor: pointer;
     font-size: 13px;

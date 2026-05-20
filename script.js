@@ -1,8 +1,10 @@
 const DAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
 let rowCount = 0;
 
+// 📌 แนะนำ: ตรวจสอบด้านบนสุดของไฟล์ script.js ด้วยนะคร้บว่ามีตัวแปร let rowCount = 5; (หรือตามจำนวนแถวเริ่มต้น) ประกาศไว้แล้วหรือยัง
+
 function addRow() {
-  rowCount++;
+  rowCount++; // เพิ่มค่าตัวแปรนับแถว
   const rid = rowCount;
   const tbody = document.getElementById('otBody');
   const tr = document.createElement('tr');
@@ -26,24 +28,29 @@ function addRow() {
     <td><input type="text" id="approve-${rid}" placeholder="ชื่อผู้อนุมัติ" style="${s}width:100%;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
   `;
   tbody.appendChild(tr);
+  updateRowNumbers();
 }
+
 function removeLastRow() {
-    // เลือกแถวทั้งหมดที่มีอยู่ใน tbody ของตารางปฏิบัติงาน
-    // (ปรับเปลี่ยน Selector ให้ตรงกับโครงสร้างตารางหลักของคุณได้ครับ)
-    let rows = document.querySelectorAll('tbody tr');
+    let rows = document.querySelectorAll('#otBody tr');
     
-    // ตั้งเงื่อนไขป้องกัน: ป้องกันไม่ให้ลบจนเกลี้ยงตาราง อย่างน้อยต้องเหลือไว้ 1 แถวเริ่มต้น
     if (rows.length > 1) {
-        // ลบแถวตัวสุดท้ายสุดออก (.length - 1)
+        // ลบแถวล่าสุดออกจากหน้าจอ
         rows[rows.length - 1].remove();
         
-        // 🔥 สำคัญมาก: เรียกฟังก์ชันคำนวณผลรวมชั่วโมงและเงินใหม่ตรงนี้
-        // ให้เปลี่ยนชื่อฟังก์ชันด้านล่างนี้ให้ตรงกับชื่อฟังก์ชันคำนวณเดิมในระบบของคุณนะครับ
-        if (typeof calculateTotals === "function") {
-            calculateTotals();
+        // 🔥 จุดสำคัญ: ต้องลบค่าตัวแปรนับแถวถอยหลังด้วย เพื่อไม่ให้ ID ชนกันเวลาเพิ่มแถวใหม่
+        rowCount--; 
+        
+        // สั่งคำนวณยอดรวมใหม่ทันทีหลังจากลบแถว
+        // (ตรวจสอบชื่อฟังก์ชันคำนวณเงินรวมในไฟล์ของคุณอีกครั้งนะครับ หากไม่ใช่ calcRow หรือ calcAll ให้เปลี่ยนชื่อตรงนี้)
+        if (typeof calcAll === "function") {
+            calcAll();
         } else if (typeof updateTotals === "function") {
             updateTotals();
         }
+        
+        // จัดลำดับเลขข้อ 1, 2, 3, 4 ใหม่ให้ถูกต้อง
+        updateRowNumbers();
     } else {
         alert('ต้องมีรายการปฏิบัติงานล่วงเวลาอย่างน้อย 1 แถวครับ');
     }
@@ -54,12 +61,20 @@ function autoFillDay(rid) {
   if (!dateEl.value) return;
   const d = new Date(dateEl.value);
   document.getElementById('day-' + rid).value = DAYS[d.getDay()];
-  calcRow(rid);
+  if (typeof calcRow === "function") {
+      calcRow(rid);
+  }
 }
 
-function toMin(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
+// ฟังก์ชันเคลียร์และจัดเลขลำดับ (ครั้งที่) ด้านหน้าตารางให้เรียงถูกต้อง 1, 2, 3... เสมอ
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('#otBody tr');
+    rows.forEach((row, index) => {
+        const numCell = row.querySelector('.row-num');
+        if (numCell) {
+            numCell.textContent = index + 1;
+        }
+    });
 }
 
 function calcRow(rid) {
