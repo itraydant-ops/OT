@@ -76,12 +76,36 @@ td input[type="text"].detail-input { text-align: left; }
 .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
 .note { font-size: 11px; color: #9ca3af; margin-top: 6px; padding-left: 4px; }
 
-/* Print */
 @media print {
-  body { background: #fff; }
-  .page { margin: 0; padding: 0; max-width: 100%; }
-  .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 12px; padding: 16px; }
-  .actions, .btn-add { display: none !important; }
-  table { font-size: 11px; }
-  th, td { padding: 4px 5px; }
+    /* 1. กำหนดขนาดหน้ากระดาษ A4 แนวตั้ง และตั้งค่า Margin */
+    @page {
+        size: A4 portrait;
+        margin: 10mm 15mm 10mm 15mm; /* บน ขวา ล่าง ซ้าย */
+    }
+
+    /* 2. บังคับให้ Container หลัก ขยายเต็มความกว้างหน้ากระดาษ */
+    body, .container, .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 3. จัดการตารางที่มีปัญหาตกขอบ */
+    table {
+        width: 100% !important;
+        table-layout: fixed; /* บังคับควบคุมความกว้างคอลัมน์ */
+        word-wrap: break-word; /* ให้ตัวหนังสือขึ้นบรรทัดใหม่ถ้าจอกระดาษไม่พอ */
+    }
+
+    /* 4. ซ่อนแถบ Scrollbar ที่อาจจะติดมาตอนพิมพ์ */
+    .table-responsive, :::-webkit-scrollbar {
+        overflow: visible !important;
+        display: none !important;
+    }
+
+    /* 5. ซ่อนปุ่มที่ไม่จำเป็นต้องอยู่บนกระดาษ เช่น ปุ่ม "เพิ่มแถว" */
+    button, .btn, .add-row-btn {
+        display: none !important;
+    }
 }
