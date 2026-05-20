@@ -77,17 +77,17 @@ td input[type="text"].detail-input { text-align: left; }
 .note { font-size: 11px; color: #9ca3af; margin-top: 6px; padding-left: 4px; }
 
 @media print {
-    /* 1. ตั้งค่าหน้ากระดาษ A4 แนวตั้ง และปรับระยะขอบแบบประหยัดพื้นที่ */
+    /* 1. ตั้งค่าหน้ากระดาษ A4 แนวตั้ง และใช้ระยะขอบแบบประหยัดพื้นที่ */
     @page {
         size: A4 portrait;
-        margin: 8mm 8mm 8mm 8mm; /* ลดระยะขอบเหลือ 8 มิลลิเมตร เพิ่มพื้นที่แนวตั้ง */
+        margin: 8mm 8mm 8mm 8mm; /* ปรับลดขอบเหลือ 8 มิลลิเมตร เพื่อเพิ่มพื้นที่เนื้อหาแนวตั้ง */
     }
 
-    /* 2. บังคับรีเซ็ตพื้นหลังและย่อฟอนต์ภาพรวมลง เพื่อล็อกให้จบในหน้าเดียว */
+    /* 2. รีเซ็ตพื้นหลังและปรับขนาดฟอนต์ให้กะทัดรัดขึ้น เพื่อดึงเนื้อหาที่ขาดให้กลับขึ้นมา */
     body {
         background: #fff !important;
         color: #000 !important;
-        font-size: 11px !important; /* ปรับลดขนาดตัวอักษรลง 1px ช่วยลดความสูงภาพรวม */
+        font-size: 11px !important; /* ปรับลดขนาดตัวอักษรลงเล็กน้อยเพื่อไม่ให้แถวตารางหนาเกินไป */
         line-height: 1.2 !important;
     }
     .page {
@@ -100,42 +100,43 @@ td input[type="text"].detail-input { text-align: left; }
         background: #fff !important;
         border: none !important;
         box-shadow: none !important;
-        padding: 5px 0 !important; /* บีบพื้นที่เว้นวรรคบน-ล่างของแต่ละกล่องให้แคบลง */
-        margin-bottom: 8px !important;
+        padding: 4px 0 !important; /* บีบระยะห่างระหว่างกล่องข้อความให้ชิดกันขึ้น */
+        margin-bottom: 6px !important;
     }
 
-    /* 3. ลบขอบมนและเงาของตาราง ป้องกันตารางบีบตัว */
+    /* 3. แก้ไขปัญหาใหญ่: ปลดล็อกระบบ Overflow ที่ทำให้เนื้อหาขาดหาย */
     .table-wrap {
-        overflow: visible !important;
+        overflow: visible !important; /* เปลี่ยนจาก auto เป็น visible เพื่อให้บราวเซอร์ยอมพิมพ์เนื้อหาทั้งหมด */
         border: 1px solid #e2e4e9 !important;
         border-radius: 0 !important;
     }
     table {
         width: 100% !important;
         max-width: 100% !important;
+        min-width: unset !important; /* ล้างค่า min-width 780px ออก ไม่อย่างนั้นตารางจะทะลุกระดาษ */
         table-layout: fixed !important; /* เปิดระบบล็อกความกว้างคอลัมน์อัตโนมัติ */
         border-collapse: collapse !important;
     }
     
-    /* บังคับลบ scrollbar ทิ้งอย่างเด็ดขาด */
+    /* ซ่อนแถบ scrollbar ที่อาจจะค้างอยู่ */
     .table-responsive, ::-webkit-scrollbar {
         display: none !important;
         overflow: visible !important;
     }
 
-    /* 4. เคลียร์กล่อง Input และ Select ให้แสดงเป็นข้อความราบเรียบ */
+    /* 4. ปรับแต่ง Input ในตารางให้กลายเป็นข้อความธรรมดา ไม่ดันแถวตารางขยายตัว */
     td input, td select, .field input, .field select {
         font-size: 11px !important;
         border: none !important;
         background: transparent !important;
         padding: 0 !important;
-        height: auto !important; /* ปล่อยความสูงอิสระไม่ให้กล่องดันแถวตารางหนาเกินไป */
+        height: auto !important;
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
     }
 
-    /* 5. ล็อกเปอร์เซ็นต์ความกว้างคอลัมน์ของตารางปฏิบัติงานอย่างเข้มงวด */
+    /* 5. จัดสรรสัดส่วนความกว้างของแต่ละคอลัมน์ (9 ช่อง) ให้ลงตัวบนกระดาษแนวตั้ง */
     /* ครั้งที่(4%) วัน(6%) วันที่(11%) เริ่ม(8%) สิ้นสุด(8%) รวม(7%) อัตรา(8%) รายละเอียด(34%) อนุมัติ(14%) */
     table th:nth-child(1), table td:nth-child(1) { width: 4% !important; }
     table th:nth-child(2), table td:nth-child(2) { width: 6% !important; }
@@ -144,10 +145,10 @@ td input[type="text"].detail-input { text-align: left; }
     table th:nth-child(5), table td:nth-child(5) { width: 8% !important; }
     table th:nth-child(6), table td:nth-child(6) { width: 7% !important; }
     table th:nth-child(7), table td:nth-child(7) { width: 8% !important; }
-    table th:nth-child(8), table td:nth-child(8) { width: 34% !important; text-align: left !important; } 
+    table th:nth-child(8), table td:nth-child(8) { width: 34% !important; text-align: left !important; } /* ขยายช่องรายละเอียดงานให้กว้างที่สุด */
     table th:nth-child(9), table td:nth-child(9) { width: 14% !important; }
 
-    /* เคลียร์ตารางสรุปเงิน (Summary) ด้านล่างให้ขยับอิสระ ไม่โดนสูตรสัดส่วนด้านบนเบี้ยว */
+    /* ป้องกันไม่ให้ตารางสรุปเงิน (Summary) ด้านล่างเบี้ยวตามเปอร์เซ็นต์ตารางหลัก */
     .summary-wrap table, .summary-wrap th, .summary-wrap td {
         width: auto !important;
         table-layout: auto !important;
@@ -158,16 +159,21 @@ td input[type="text"].detail-input { text-align: left; }
         text-align: center !important;
     }
 
-    /* บีบกล่องรวมชั่วโมงด้านบนตารางสรุปให้กะทัดรัดขึ้น */
+    /* บีบขนาดแถบรวมจำนวนชั่วโมงสีฟ้าให้กะทัดรัดขึ้น */
     .total-bar {
-        padding: 6px 12px !important;
-        margin: 10px 0 0 !important;
+        padding: 4px 10px !important;
+        margin: 8px 0 0 !important;
     }
     .total-bar strong {
-        font-size: 16px !important;
+        font-size: 15px !important;
     }
 
-    /* 6. ซ่อนส่วนตกแต่งและปุ่มแอคชันที่ไม่เกี่ยวข้องกับการพิมพ์ออกไป */
+    /* จัดการช่องเซ็นชื่อด้านล่างสุดไม่ให้หลุดหน้า */
+    .sign-grid {
+        gap: 16px !important; /* ลดช่องว่างระหว่างกล่องลงนาม */
+    }
+
+    /* 6. ซ่อนปุ่มกดและข้อความแนะนำที่ไม่จำเป็นสำหรับการพิมพ์ */
     .btn-add, .btn-danger, .btn-primary, .actions, .note {
         display: none !important;
     }
