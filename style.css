@@ -3,10 +3,52 @@ body { font-family: 'Sarabun', sans-serif; background: #f4f5f7; color: #1a1a2e; 
 .page { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
 .card { background: #fff; border-radius: 12px; border: 1px solid #e2e4e9; padding: 28px 32px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 
-/* Header */
+/* Header - จัดระเบียบส่วนหัวแถวตรง */
 .header { display: flex; align-items: center; gap: 20px; padding-bottom: 20px; border-bottom: 2px solid #e2e4e9; margin-bottom: 24px; }
-.logo-circle { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #1e3a5f, #2d6a9f); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.logo-circle span { color: #fff; font-weight: 700; font-size: 13px; letter-spacing: 1px; }
+
+/* โครงสร้างกรอบวงกลมสำหรับโลโก้ */
+/* โครงสร้างกรอบวงกลมสำหรับโลโก้ - เอาพื้นหลังไล่เฉดสีน้ำเงินออก */
+/* โครงสร้างกรอบวงกลมสำหรับโลโก้ - ขาว คลีน กลมดิิก */
+.logo-circle { 
+  width: 60px !important; 
+  height: 60px !important; 
+  border-radius: 50% !important; 
+  background: #ffffff !important; /* พื้นหลังขาวล้วนเพื่อให้ตัดกับสีโลโก้จริง */
+  border: 1px solid #e2e4e9 !important; /* เส้นขอบบางๆ กันกลืนกับพื้นหลังการ์ด */
+  display: flex !important; 
+  align-items: center !important; 
+  justify-content: center !important; 
+  overflow: hidden !important;
+  flex-shrink: 0 !important; 
+  position: relative !important; /* เป็นสมอเรือสำหรับการจัดกึ่งกลางแบบ Absolute */
+}
+
+/* รูปภาพโลโก้ภายในกรอบ - ใช้สีจริง 100% และล็อคจุดกึ่งกลางเป๊ะ */
+.logo-img { 
+  width: auto !important;  /* ปลดล็อคความกว้างตายตัว เพื่อให้สัดส่วนภาพไม่เพี้ยน */
+  height: 90% !important; /* ให้ความสูงกินพื้นที่ 90% ของวงกลม จะได้มีช่องไฟกำลังสวย ไม่ชิดขอบเกินไป */
+  max-width: 90% !important;
+  object-fit: contain !important; /* บังคับให้ภาพคงสัดส่วนเดิม (Aspect Ratio) ไม่บดไม่เบี้ยว */
+  display: block !important; 
+  
+  /* เทคนิคล็อคพิกัดให้อยู่ตรงกลางวงกลมพอดี ไม่ว่าไฟล์ดิบจะตัดขอบมาเท่ากันหรือไม่ */
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important; 
+
+  /* ลบฟิลเตอร์ย้อมสีออกทั้งหมด เพื่อปล่อยให้เบราว์เซอร์แสดงสีจริงและเส้นจริงของไฟล์ภาพครับ */
+  filter: none !important; 
+}
+/* รูปภาพโลโก้ภายในกรอบ */
+.logo-img { 
+  width: 100% !important; 
+  height: 100% !important; 
+  border-radius: 50% !important; 
+  object-fit: cover !important; 
+  display: block !important; 
+}
+
 .header-text h1 { font-size: 18px; font-weight: 700; color: #1a1a2e; letter-spacing: 0.5px; }
 .header-text p { font-size: 12px; color: #6b7280; margin-top: 2px; }
 .form-title { margin-left: auto; text-align: right; }
@@ -43,20 +85,8 @@ td input[type="text"].detail-input { text-align: left; }
 
 /* Buttons */
 .btn-add { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed #2d6a9f; border-radius: 8px; background: transparent; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #2d6a9f; font-weight: 500; transition: all 0.2s; margin-top: 12px; }
-/* สไตล์ปุ่มลดแถวสีแดงตอนแสดงบนหน้าจอปกติ */
-.btn-danger-action {display: inline-flex;align-items: center;gap: 6px; padding: 8px 16px;border: 1.5px dashed #dc2626; /* เส้นประสีแดง */border-radius: 8px;
-    background: #fff;
-    cursor: pointer;
-    font-size: 13px;
-    font-family: 'Sarabun', sans-serif;
-    color: #dc2626;
-    font-weight: 500;
-    transition: all 0.2s;
-    margin-top: 12px;
-    margin-left: 8px; /* เว้นระยะห่างจากปุ่มเพิ่มแถว */
-}
-
-.btn-danger-action:hover {background: #fef2f2;border-style: solid; /* เปลี่ยนเป็นเส้นทึบเวลาเอาเมาส์ไปชี้ */}
+.btn-danger-action { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1.5px dashed #dc2626; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #dc2626; font-weight: 500; transition: all 0.2s; margin-top: 12px; margin-left: 8px; }
+.btn-danger-action:hover { background: #fef2f2; border-style: solid; }
 .btn-add:hover { background: #eff6ff; border-style: solid; }
 .btn-danger { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border: 1.5px solid #fca5a5; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; font-family: 'Sarabun', sans-serif; color: #dc2626; font-weight: 500; transition: all 0.2s; }
 .btn-danger:hover { background: #fef2f2; }
@@ -92,23 +122,20 @@ td input[type="text"].detail-input { text-align: left; }
 
 /* Print */
 @media print {
-    /* 1. บังคับขนาดกระดาษ A4 แนวตั้ง และลด Margin เหลือ 5mm เพื่อรีดพื้นที่ให้มากที่สุด */
     @page {
         size: A4 portrait !important;
         margin: 5mm 5mm 5mm 5mm !important;
     }
 
-    /* 2. ล้างเอฟเฟกต์หน้าจอ, สีพื้นหลัง และเงาของ Container ทั้งหมด */
     body {
         background: #fff !important;
         color: #000 !important;
         font-size: 11px !important;
         line-height: 1.1 !important;
-        -webkit-print-color-adjust: exact !important; /* บังคับให้สีไฮไลต์พิมพ์ออกมาด้วย */
+        -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
     
-    /* ดักคลาสทุกตัวที่อาจจะบล็อกความกว้างไว้ */
     .page, .card, .container, .main-content {
         max-width: 100% !important;
         width: 100% !important;
@@ -119,7 +146,18 @@ td input[type="text"].detail-input { text-align: left; }
         border: none !important;
     }
 
-    /* 3. ปลดล็อกและทำลายสไตล์ min-width ของตารางเดิมทิ้ง */
+    /* เอา .logo-circle ออกจากส่วนที่โดนซ่อน เพื่อให้แสดงบน PDF */
+    .btn-add, .btn-danger, .btn-primary, .actions, .note, button {
+        display: none !important;
+    }
+
+    /* บังคับให้โลโก้ยังคงแสดงผลเป็นวงกลมบนเอกสารพิมพ์ */
+    .logo-circle {
+        display: flex !important;
+        width: 45px !important;
+        height: 45px !important;
+    }
+
     .table-wrap {
         overflow: visible !important;
         display: block !important;
@@ -132,18 +170,16 @@ td input[type="text"].detail-input { text-align: left; }
     table {
         width: 100% !important;
         max-width: 100% !important;
-        min-width: 0 !important; /* สั่งทับ min-width: 780px ของเดิมอย่างเด็ดขาด */
-        table-layout: fixed !important; /* เปิดระบบคำนวณสัดส่วนคอลัมน์คงที่ */
+        min-width: 0 !important;
+        table-layout: fixed !important;
         border-collapse: collapse !important;
     }
 
-    /* ซ่อน scrollbar แนวนอนและคอนเทนเนอร์ที่หลุดขอบ */
     .table-responsive, ::-webkit-scrollbar {
         display: none !important;
         overflow: visible !important;
     }
 
-    /* 4. จัดการช่องข้อความและลูกศรให้แบนราบ ไม่กินพื้นที่ความสูง/ความกว้าง */
     td input, td select, .field input, .field select {
         font-size: 11px !important;
         border: none !important;
@@ -157,20 +193,16 @@ td input[type="text"].detail-input { text-align: left; }
         appearance: none !important;
     }
     
-    /* บังคับให้ข้อความรายละเอียดงานชิดซ้าย */
     td input[type="text"].detail-input {
         text-align: left !important;
     }
 
-    /* ซ่อนไอคอนปฏิทินและไอคอนเวลาของบราวเซอร์ (เพราะทำให้ช่องตารางกว้างเกินไป) */
     input[type="date"]::-webkit-calendar-picker-indicator,
     input[type="time"]::-webkit-calendar-picker-indicator {
         display: none !important;
         -webkit-appearance: none !important;
     }
 
-    /* 5. ล็อกเปอร์เซ็นต์ความกว้างทั้ง 9 คอลัมน์ให้รวมกันได้ 100% พอดีเป๊ะ */
-    /* ครั้งที่(4%) วัน(6%) วันที่(12%) เริ่ม(8%) สิ้นสุด(8%) รวม(7%) อัตรา(8%) รายละเอียด(33%) อนุมัติ(14%) */
     table th:nth-child(1), table td:nth-child(1) { width: 4% !important; }
     table th:nth-child(2), table td:nth-child(2) { width: 6% !important; }
     table th:nth-child(3), table td:nth-child(3) { width: 12% !important; }
@@ -181,7 +213,6 @@ td input[type="text"].detail-input { text-align: left; }
     table th:nth-child(8), table td:nth-child(8) { width: 33% !important; } 
     table th:nth-child(9), table td:nth-child(9) { width: 14% !important; }
 
-    /* ปลดล็อกตารางสรุปเงิน (Summary) ด้านล่าง ไม่ให้เบี้ยวตามตารางหลัก */
     .summary-wrap table, .summary-wrap th, .summary-wrap td {
         width: auto !important;
         table-layout: auto !important;
@@ -194,10 +225,5 @@ td input[type="text"].detail-input { text-align: left; }
     .total-bar {
         padding: 4px 10px !important;
         margin: 6px 0 0 !important;
-    }
-
-    /* 6. ซ่อนส่วนปุ่มและองค์ประกอบที่ไม่ต้องการให้แสดงบนกระดาษ */
-    .btn-add, .btn-danger, .btn-primary, .actions, .note, button, .logo-circle {
-        display: none !important;
     }
 }

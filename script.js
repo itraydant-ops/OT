@@ -1,12 +1,13 @@
 const DAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
 let rowCount = 0;
 
-// 📌 แนะนำ: ตรวจสอบด้านบนสุดของไฟล์ script.js ด้วยนะคร้บว่ามีตัวแปร let rowCount = 5; (หรือตามจำนวนแถวเริ่มต้น) ประกาศไว้แล้วหรือยัง
-
+// 1. ฟังก์ชันเพิ่มแถวตาราง
 function addRow() {
-  rowCount++; // เพิ่มค่าตัวแปรนับแถว
+  rowCount++; 
   const rid = rowCount;
   const tbody = document.getElementById('otBody');
+  if (!tbody) return;
+
   const tr = document.createElement('tr');
   tr.id = 'row-' + rid;
 
@@ -31,42 +32,32 @@ function addRow() {
   updateRowNumbers();
 }
 
+// 2. ฟังก์ชันลบแถวตารางล่าสุด
 function removeLastRow() {
     let rows = document.querySelectorAll('#otBody tr');
     
     if (rows.length > 1) {
-        // ลบแถวล่าสุดออกจากหน้าจอ
         rows[rows.length - 1].remove();
-        
-        // 🔥 จุดสำคัญ: ต้องลบค่าตัวแปรนับแถวถอยหลังด้วย เพื่อไม่ให้ ID ชนกันเวลาเพิ่มแถวใหม่
-        rowCount--; 
-        
-        // สั่งคำนวณยอดรวมใหม่ทันทีหลังจากลบแถว
-        // (ตรวจสอบชื่อฟังก์ชันคำนวณเงินรวมในไฟล์ของคุณอีกครั้งนะครับ หากไม่ใช่ calcRow หรือ calcAll ให้เปลี่ยนชื่อตรงนี้)
-        if (typeof calcAll === "function") {
-            calcAll();
-        } else if (typeof updateTotals === "function") {
-            updateTotals();
-        }
-        
-        // จัดลำดับเลขข้อ 1, 2, 3, 4 ใหม่ให้ถูกต้อง
         updateRowNumbers();
+        updateTotal(); 
     } else {
         alert('ต้องมีรายการปฏิบัติงานล่วงเวลาอย่างน้อย 1 แถวครับ');
     }
 }
 
+// 3. ฟังก์ชันเลือกวันอัตโนมัติจากปฏิทิน
 function autoFillDay(rid) {
   const dateEl = document.getElementById('date-' + rid);
-  if (!dateEl.value) return;
+  if (!dateEl || !dateEl.value) return;
   const d = new Date(dateEl.value);
-  document.getElementById('day-' + rid).value = DAYS[d.getDay()];
-  if (typeof calcRow === "function") {
-      calcRow(rid);
+  const daySelect = document.getElementById('day-' + rid);
+  if (daySelect) {
+    daySelect.value = DAYS[d.getDay()];
   }
+  calcRow(rid);
 }
 
-// ฟังก์ชันเคลียร์และจัดเลขลำดับ (ครั้งที่) ด้านหน้าตารางให้เรียงถูกต้อง 1, 2, 3... เสมอ
+// 4. ฟังก์ชันรีรันเลขลำดับข้อ (ครั้งที่)
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#otBody tr');
     rows.forEach((row, index) => {
@@ -77,60 +68,138 @@ function updateRowNumbers() {
     });
 }
 
+// 5. ฟังก์ชันคำนวณชั่วโมงของแต่ละแถว
 function calcRow(rid) {
-  const s = document.getElementById('start-' + rid).value;
-  const e = document.getElementById('end-' + rid).value;
-  const hrsEl = document.getElementById('hrs-' + rid);
-  if (s && e) {
-    let diff = toMin(e) - toMin(s);
-    if (diff < 0) diff += 1440;
-    hrsEl.textContent = (diff / 60).toFixed(2);
-    hrsEl.style.color = '#2d6a9f';
-  } else {
-    hrsEl.textContent = '-';
-    hrsEl.style.color = '#9ca3af';
+  const startEl = document.getElementById('start-' + rid);
+  const endEl = document.getElementById('end-' + rid);
+  const hrsCell = document.getElementById('hrs-' + rid);
+
+  if (!startEl || !endEl || !hrsCell) return;
+
+  const startTime = startEl.value; 
+  const endTime = endEl.value;
+
+  if (!startTime || !endTime) {
+    hrsCell.textContent = '-';
+    hrsCell.style.color = '#9ca3af';
+    updateTotal();
+    return;
   }
-  updateTotal();
+
+  function parseTimeToMinutes(timeStr) {
+    let hours = 0;
+    let minutes = 0;
+    const isAmpm = timeStr.toLowerCase().includes('am') || timeStr.toLowerCase().includes('pm');
+    
+    if (isAmpm) {
+      const ampm = timeStr.match(/[a-zA-Z]+/)[0].toUpperCase();
+      const timePart = timeStr.replace(/[a-zA-Z]+/g, '').trim();
+      const parts = timePart.split(':').map(Number);
+      hours = parts[0];
+      minutes = parts[1] || 0;
+      
+      if (ampm === 'PM' && hours < 12) hours += 12;
+      if (ampm === 'AM' && hours === 12) hours = 0;
+    } else {
+      const parts = timeStr.split(':').map(Number);
+      if (parts.length >= 2) {
+        hours = parts[0];
+        minutes = parts[1];
+      }
+    }
+    return (hours * 60) + minutes;
+  }
+
+  const startTotalMins = parseTimeToMinutes(startTime);
+  let endTotalMins = parseTimeToMinutes(endTime);
+
+  if (endTotalMins < startTotalMins) {
+    endTotalMins += 24 * 60; 
+  }
+
+  const diffMins = endTotalMins - startTotalMins;
+  const diffHrs = diffMins / 60;
+
+  hrsCell.textContent = diffHrs.toFixed(2);
+  hrsCell.style.color = '#2d6a9f';
+
+  updateTotal(); 
 }
 
+// 6. ฟังก์ชันรวมชั่วโมงสะสมทั้งหมดในตารางใหญ่
 function updateTotal() {
   let total = 0;
-  for (let i = 1; i <= rowCount; i++) {
-    const el = document.getElementById('hrs-' + i);
-    if (el && el.textContent !== '-') total += parseFloat(el.textContent) || 0;
+  const hrsCells = document.querySelectorAll('#otBody .hrs-cell');
+  
+  hrsCells.forEach(cell => {
+    if (cell && cell.textContent !== '-') {
+      total += parseFloat(cell.textContent) || 0;
+    }
+  });
+  
+  const totalHrsEl = document.getElementById('totalHrs');
+  if (totalHrsEl) {
+    totalHrsEl.textContent = total.toFixed(2);
   }
-  document.getElementById('totalHrs').textContent = total.toFixed(2);
 }
 
+// 7. ฟังก์ชันคำนวณเงินในสรุปตารางล่าง
 function calcSummary() {
   let totalHrs = 0, totalBaht = 0;
   for (let i = 1; i <= 3; i++) {
     const r = parseFloat(document.getElementById('rate' + i).value) || 0;
     const h = parseFloat(document.getElementById('hrs' + i).value) || 0;
     const sub = r * h;
-    document.getElementById('sum' + i).textContent = sub.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    const sumEl = document.getElementById('sum' + i);
+    if (sumEl) {
+      sumEl.textContent = sub.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
     totalHrs += h;
     totalBaht += sub;
   }
-  document.getElementById('totalSumHrs').textContent = totalHrs.toFixed(2);
-  document.getElementById('totalSumBaht').textContent = totalBaht.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  
+  const totalSumHrsEl = document.getElementById('totalSumHrs');
+  const totalSumBahtEl = document.getElementById('totalSumBaht');
+  
+  if (totalSumHrsEl) totalSumHrsEl.textContent = totalHrs.toFixed(2);
+  if (totalSumBahtEl) totalSumBahtEl.textContent = totalBaht.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// 8. ฟังก์ชันเคลียร์หน้าจอทั้งหมด
 function clearAll() {
   if (!confirm('ยืนยันการล้างข้อมูลทั้งหมด?')) return;
-  document.getElementById('otBody').innerHTML = '';
+  const tbody = document.getElementById('otBody');
+  if (tbody) tbody.innerHTML = '';
+  
   rowCount = 0;
-  document.getElementById('totalHrs').textContent = '0.00';
-  ['hrs1','hrs2','hrs3'].forEach(id => document.getElementById(id).value = '');
-  ['sum1','sum2','sum3'].forEach(id => document.getElementById(id).textContent = '0.00');
-  document.getElementById('totalSumHrs').textContent = '0.00';
-  document.getElementById('totalSumBaht').textContent = '0.00';
+  const totalHrsEl = document.getElementById('totalHrs');
+  if (totalHrsEl) totalHrsEl.textContent = '0.00';
+  
+  ['hrs1','hrs2','hrs3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['sum1','sum2','sum3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '0.00';
+  });
+  
+  const totalSumHrsEl = document.getElementById('totalSumHrs');
+  const totalSumBahtEl = document.getElementById('totalSumBaht');
+  if (totalSumHrsEl) totalSumHrsEl.textContent = '0.00';
+  if (totalSumBahtEl) totalSumBahtEl.textContent = '0.00';
+  
   ['empName','empYear','sigEmp','dateEmp','sigApprove','dateApprove'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  document.getElementById('empMonth').value = '';
+  
+  const empMonthEl = document.getElementById('empMonth');
+  if (empMonthEl) empMonthEl.value = '';
+  
   for (let i = 0; i < 5; i++) addRow();
 }
 
+// 📌 บรรทัดสั่งรันแถวเริ่มต้น 5 แถวตอนเปิดเว็บ
 for (let i = 0; i < 5; i++) addRow();
