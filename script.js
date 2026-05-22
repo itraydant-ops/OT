@@ -1,15 +1,12 @@
 const DAYS = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
-let rowCount = 0;
 
-// 1. ฟังก์ชันเพิ่มแถวตาราง
+// 1. ฟังก์ชันเพิ่มแถวตาราง (ใช้ Date.now() สร้าง Unique ID ป้องกัน ID ซ้ำกันเมื่อลบหรือรันเลขข้อใหม่)
 function addRow() {
-  rowCount++; 
-  const rid = rowCount;
   const tbody = document.getElementById('otBody');
   if (!tbody) return;
 
+  const rid = Date.now() + Math.random().toString(36).substr(2, 5); // Unique ID ชั่วคราวสำหรับอิลิเมนต์
   const tr = document.createElement('tr');
-  tr.id = 'row-' + rid;
 
   const dayOpts = DAYS.map(d => `<option>${d}</option>`).join('');
   const s  = 'border:1.5px solid transparent;border-radius:6px;height:30px;font-family:\'Sarabun\',sans-serif;font-size:13px;color:#1a1a2e;background:transparent;transition:all .2s;';
@@ -18,23 +15,24 @@ function addRow() {
   const fo = `this.style.borderColor='#2d6a9f';this.style.background='#fff'`;
 
   tr.innerHTML = `
-    <td class="row-num">${rid}</td>
-    <td><select id="day-${rid}" onchange="calcRow(${rid})" style="${s}width:88px;padding:0 4px;cursor:pointer" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"><option value="">-</option>${dayOpts}</select></td>
-    <td><input type="date" id="date-${rid}" oninput="autoFillDay(${rid})" style="${s}width:130px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
-    <td><input type="time" id="start-${rid}" oninput="calcRow(${rid})" style="${s}width:96px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
-    <td><input type="time" id="end-${rid}" oninput="calcRow(${rid})" style="${s}width:96px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
-    <td class="hrs-cell" id="hrs-${rid}">-</td>
-    <td><input type="number" id="rate-${rid}" placeholder="บาท/ชม." oninput="calcRow(${rid})" style="${s}width:82px;padding:0 6px;text-align:center" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
-    <td><input type="text" class="detail-input" id="detail-${rid}" placeholder="ระบุรายละเอียดงาน..." style="${s}width:100%;padding:0 8px;text-align:left" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
-    <td><input type="text" id="approve-${rid}" placeholder="ชื่อผู้อนุมัติ" style="${s}width:100%;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td class="row-num"></td>
+    <td><select class="day-select" onchange="calcRow(this)" style="${s}width:88px;padding:0 4px;cursor:pointer" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"><option value="">-</option>${dayOpts}</select></td>
+    <td><input type="date" class="date-input" oninput="autoFillDay(this)" style="${s}width:130px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td><input type="time" class="start-input" oninput="calcRow(this)" style="${s}width:96px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td><input type="time" class="end-input" oninput="calcRow(this)" style="${s}width:96px;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td class="hrs-cell">-</td>
+    <td><input type="number" class="rate-input" placeholder="บาท/ชม." oninput="calcRow(this)" style="${s}width:82px;padding:0 6px;text-align:center" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td><input type="text" class="detail-input" placeholder="ระบุรายละเอียดงาน..." style="${s}width:100%;padding:0 8px;text-align:left" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
+    <td><input type="text" class="approve-input" placeholder="ชื่อผู้อนุมัติ" style="${s}width:100%;padding:0 6px" onmouseover="${mo}" onmouseout="${mu}" onfocus="${fo}"></td>
   `;
+  
   tbody.appendChild(tr);
   updateRowNumbers();
 }
 
 // 2. ฟังก์ชันลบแถวตารางล่าสุด
 function removeLastRow() {
-    let rows = document.querySelectorAll('#otBody tr');
+    const rows = document.querySelectorAll('#otBody tr');
     
     if (rows.length > 1) {
         rows[rows.length - 1].remove();
@@ -45,19 +43,23 @@ function removeLastRow() {
     }
 }
 
-// 3. ฟังก์ชันเลือกวันอัตโนมัติจากปฏิทิน
-function autoFillDay(rid) {
-  const dateEl = document.getElementById('date-' + rid);
+// 3. ฟังก์ชันเลือกวันอัตโนมัติจากปฏิทิน (เปลี่ยนมาอ้างอิงผ่าน Node/Element เพื่อไม่ให้สคริปต์พังเวลา Clone หน้า)
+function autoFillDay(element) {
+  const row = element.closest('tr');
+  if (!row) return;
+
+  const dateEl = row.querySelector('.date-input');
   if (!dateEl || !dateEl.value) return;
+
   const d = new Date(dateEl.value);
-  const daySelect = document.getElementById('day-' + rid);
+  const daySelect = row.querySelector('.day-select');
   if (daySelect) {
     daySelect.value = DAYS[d.getDay()];
   }
-  calcRow(rid);
+  calcRow(element);
 }
 
-// 4. ฟังก์ชันรีรันเลขลำดับข้อ (ครั้งที่)
+// 4. ฟังก์ชันรีรันเลขลำดับข้อ (ครั้งที่) ให้ถูกต้องเรียบร้อยเสมอ
 function updateRowNumbers() {
     const rows = document.querySelectorAll('#otBody tr');
     rows.forEach((row, index) => {
@@ -69,10 +71,13 @@ function updateRowNumbers() {
 }
 
 // 5. ฟังก์ชันคำนวณชั่วโมงของแต่ละแถว
-function calcRow(rid) {
-  const startEl = document.getElementById('start-' + rid);
-  const endEl = document.getElementById('end-' + rid);
-  const hrsCell = document.getElementById('hrs-' + rid);
+function calcRow(element) {
+  const row = element.closest('tr');
+  if (!row) return;
+
+  const startEl = row.querySelector('.start-input');
+  const endEl = row.querySelector('.end-input');
+  const hrsCell = row.querySelector('.hrs-cell');
 
   if (!startEl || !endEl || !hrsCell) return;
 
@@ -114,7 +119,7 @@ function calcRow(rid) {
   let endTotalMins = parseTimeToMinutes(endTime);
 
   if (endTotalMins < startTotalMins) {
-    endTotalMins += 24 * 60; 
+    endTotalMins += 24 * 60; // รองรับกรณีทำงานล่วงเวลาข้ามวัน (หลังเที่ยงคืน)
   }
 
   const diffMins = endTotalMins - startTotalMins;
@@ -166,13 +171,12 @@ function calcSummary() {
   if (totalSumBahtEl) totalSumBahtEl.textContent = totalBaht.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// 8. ฟังก์ชันเคลียร์หน้าจอทั้งหมด
+// 8. ฟังก์ชันเคลียร์หน้าจอและล้างข้อมูลทั้งหมด
 function clearAll() {
   if (!confirm('ยืนยันการล้างข้อมูลทั้งหมด?')) return;
   const tbody = document.getElementById('otBody');
   if (tbody) tbody.innerHTML = '';
   
-  rowCount = 0;
   const totalHrsEl = document.getElementById('totalHrs');
   if (totalHrsEl) totalHrsEl.textContent = '0.00';
   
@@ -198,8 +202,14 @@ function clearAll() {
   const empMonthEl = document.getElementById('empMonth');
   if (empMonthEl) empMonthEl.value = '';
   
+  // สร้างแถวเริ่มต้นกลับมา 5 แถว
   for (let i = 0; i < 5; i++) addRow();
 }
 
-// 📌 บรรทัดสั่งรันแถวเริ่มต้น 5 แถวตอนเปิดเว็บ
-for (let i = 0; i < 5; i++) addRow();
+// 📌 บรรทัดสั่งรันแถวเริ่มต้น 5 แถวทันทีเมื่อเปิดเบราว์เซอร์ครั้งแรก
+document.addEventListener("DOMContentLoaded", function() {
+  const tbody = document.getElementById('otBody');
+  if (tbody && tbody.children.length === 0) {
+    for (let i = 0; i < 5; i++) addRow();
+  }
+});

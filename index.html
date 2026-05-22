@@ -8,178 +8,258 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page">
 
-  <div class="card">
-    <div class="header">
+<div id="document-container">
+  
+  <div class="page-sheet">
+    <div class="card">
       
-      <div class="logo-circle">
-        <img src="RDlogo.png" alt="" class="logo-img">
-        <span class="logo-text-fallback"></span>
+      <div class="header">
+        <div class="logo-circle">
+          <img src="RDlogo.png" alt="" class="logo-img">
+          <span class="logo-text-fallback"></span>
+        </div>
+
+        <div class="header-text">
+          <h1>RAYDANT INTERNATIONAL CO., LTD.</h1>
+          <p>บริษัท เรย์แด้นท์ อินเตอร์เนชั่นแนล จำกัด</p>
+        </div>
+        
+        <div class="form-title">
+          <h2>แบบการเบิกเงินค่าล่วงเวลา</h2>
+          <p>ค่าทำงานวันหยุด ประจำเดือน</p>
+        </div>
       </div>
 
-      <div class="header-text">
-        <h1>RAYDANT INTERNATIONAL CO., LTD.</h1>
-        <p>บริษัท เรย์แด้นท์ อินเตอร์เนชั่นแนล จำกัด</p>
+      <div class="top-employee-profile">
+        <div class="top-grid">
+          <div class="field">
+            <label>ชื่อ - นามสกุล</label>
+            <input type="text" id="empName" placeholder="กรอกชื่อพนักงาน">
+          </div>
+          <div class="field">
+            <label>เดือน</label>
+            <select id="empMonth">
+              <option value="">-- เลือกเดือน --</option>
+              <option>มกราคม</option><option>กุมภาพันธ์</option><option>มีนาคม</option>
+              <option>เมษายน</option><option>พฤษภาคม</option><option>มิถุนายน</option>
+              <option>กรกฎาคม</option><option>สิงหาคม</option><option>กันยายน</option>
+              <option>ตุลาคม</option><option>พฤศจิกายน</option><option>ธันวาคม</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>พ.ศ.</label>
+            <input type="text" id="empYear" placeholder="2569" maxlength="4">
+          </div>
+        </div>
       </div>
+
+      <div class="section-label">รายการปฏิบัติงานล่วงเวลา</div>
       
-      <div class="form-title">
-        <h2>แบบการเบิกเงินค่าล่วงเวลา</h2>
-        <p>ค่าทำงานวันหยุด ประจำเดือน</p>
+      <div class="table-wrap">
+        <table id="otTable" class="main-table">
+          <thead>
+            <tr>
+              <th style="width:5%">ครั้งที่</th>
+              <th style="width:10%">วัน</th>
+              <th style="width:15%">วันที่</th>
+              <th style="width:12%">เวลาเริ่ม</th>
+              <th style="width:12%">เวลาสิ้นสุด</th>
+              <th style="width:10%">รวม (ชม.)</th>
+              <th style="width:12%">อัตรา (บาท/ชม.)</th>
+              <th>รายละเอียดงาน</th>
+              <th style="width:12%">ผู้อนุมัติ</th>
+            </tr>
+          </thead>
+          <tbody id="otBody">
+            </tbody>
+        </table>
       </div>
 
-    </div>
+      <div class="action-buttons-wrap" style="display: flex; gap: 8px; margin-top: 12px;">
+        <button class="btn-add" onclick="addRow()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          เพิ่มแถว
+        </button>
 
-    <div class="top-grid">
-      <div class="field">
-        <label>ชื่อ - นามสกุล</label>
-        <input type="text" id="empName" placeholder="กรอกชื่อพนักงาน">
+        <button class="btn-danger-action" onclick="removeLastRow()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          ลดแถว
+        </button>
       </div>
-      <div class="field">
-        <label>เดือน</label>
-        <select id="empMonth">
-          <option value="">-- เลือกเดือน --</option>
-          <option>มกราคม</option><option>กุมภาพันธ์</option><option>มีนาคม</option>
-          <option>เมษายน</option><option>พฤษภาคม</option><option>มิถุนายน</option>
-          <option>กรกฎาคม</option><option>สิงหาคม</option><option>กันยายน</option>
-          <option>ตุลาคม</option><option>พฤศจิกายน</option><option>ธันวาคม</option>
-        </select>
+
+      <div class="total-bar">
+        <span>รวมชั่วโมงทั้งหมด</span>
+        <strong id="totalHrs">0.00</strong>
+        <span>ชั่วโมง</span>
       </div>
-      <div class="field">
-        <label>พ.ศ.</label>
-        <input type="text" id="empYear" placeholder="2569" maxlength="4">
+
+      <div class="footer-summary-group" style="margin-top: 24px;">
+        <div class="section-label">สรุปการเบิกเงิน</div>
+        <div class="summary-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>การปฏิบัติงาน</th>
+                <th style="width:130px">อัตรา (เท่า)</th>
+                <th style="width:130px">ชั่วโมงรวม</th>
+                <th style="width:160px">รวมเป็นเงิน (บาท)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ค่าทำงานในวันหยุด 1 เท่า / ชั่วโมง</td>
+                <td class="summary-rate"><input type="number" id="rate1" value="1" min="0" step="0.5" oninput="calcSummary()"></td>
+                <td><input type="number" id="hrs1" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
+                <td class="sum-val" id="sum1">0.00</td>
+              </tr>
+              <tr>
+                <td>ค่าล่วงเวลาในวันทำงานปกติ 1.5 เท่า / ชั่วโมง</td>
+                <td class="summary-rate"><input type="number" id="rate2" value="1.5" min="0" step="0.5" oninput="calcSummary()"></td>
+                <td><input type="number" id="hrs2" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
+                <td class="sum-val" id="sum2">0.00</td>
+              </tr>
+              <tr>
+                <td>ค่าล่วงเวลาในวันหยุด 3 เท่า / ชั่วโมง</td>
+                <td class="summary-rate"><input type="number" id="rate3" value="3" min="0" step="0.5" oninput="calcSummary()"></td>
+                <td><input type="number" id="hrs3" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
+                <td class="sum-val" id="sum3">0.00</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2" style="text-align:right; font-weight:700">รวมทั้งสิ้น</td>
+                <td id="totalSumHrs" class="grand-total">0.00</td>
+                <td id="totalSumBaht" class="grand-total">0.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">* กรอกอัตราค่าจ้างต่อชั่วโมงในตารางรายการ เพื่อให้ระบบคำนวณค่าล่วงเวลาในแต่ละแถวโดยอัตโนมัติ</p>
+
+        <div class="sign-grid" style="margin-top: 24px;">
+          <div class="sign-box">
+            <label>ผู้ปฏิบัติงาน / ผู้รับเงิน</label>
+            <input class="sign-line" type="text" id="sigEmp" placeholder="ลงชื่อ .....................................">
+            <label>วันที่</label>
+            <input class="sign-line" type="text" id="dateEmp" placeholder="........../............/..........">
+          </div>
+          <div class="sign-box">
+            <label>ผู้อนุมัติ</label>
+            <input class="sign-line" type="text" id="sigApprove" placeholder="ลงชื่อ .....................................">
+            <label>วันที่</label>
+            <input class="sign-line" type="text" id="dateApprove" placeholder="........../............/..........">
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top: 24px;">
+          <button class="btn-danger" onclick="clearAll()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <line x1="10" y1="11" x2="10" y2="17"/>
+              <line x1="14" y1="11" x2="14" y2="17"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+            ล้างข้อมูล
+          </button>
+          <button class="btn-primary" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            พิมพ์ / บันทึก PDF
+          </button>
+        </div>
       </div>
+
     </div>
   </div>
-
-  <div class="card">
-    <div class="section-label">รายการปฏิบัติงานล่วงเวลา</div>
-    <div class="table-wrap">
-      <table id="otTable">
-        <thead>
-          <tr>
-            <th style="width:5%">ครั้งที่</th>
-            <th style="width:10%">วัน</th>
-            <th style="width:15%">วันที่</th>
-            <th style="width:12%">เวลาเริ่ม</th>
-            <th style="width:12%">เวลาสิ้นสุด</th>
-            <th style="width:10%">รวม (ชม.)</th>
-            <th style="width:12%">อัตรา (บาท/ชม.)</th>
-            <th>รายละเอียดงาน</th>
-            <th style="width:12%">ผู้อนุมัติ</th>
-          </tr>
-        </thead>
-        <tbody id="otBody">
-          </tbody>
-      </table>
-    </div>
-
-    <div style="display: flex; gap: 8px;">
-      <button class="btn-add" onclick="addRow()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        เพิ่มแถว
-      </button>
-
-      <button class="btn-danger-action" onclick="removeLastRow()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        ลดแถว
-      </button>
-    </div>
-
-    <div class="total-bar">
-      <span>รวมชั่วโมงทั้งหมด</span>
-      <strong id="totalHrs">0.00</strong>
-      <span>ชั่วโมง</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="section-label">สรุปการเบิกเงิน</div>
-    <div class="summary-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>การปฏิบัติงาน</th>
-            <th style="width:130px">อัตรา (เท่า)</th>
-            <th style="width:130px">ชั่วโมงรวม</th>
-            <th style="width:160px">รวมเป็นเงิน (บาท)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>ค่าทำงานในวันหยุด 1 เท่า / ชั่วโมง</td>
-            <td class="summary-rate"><input type="number" id="rate1" value="1" min="0" step="0.5" oninput="calcSummary()"></td>
-            <td><input type="number" id="hrs1" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
-            <td class="sum-val" id="sum1">0.00</td>
-          </tr>
-          <tr>
-            <td>ค่าล่วงเวลาในวันทำงานปกติ 1.5 เท่า / ชั่วโมง</td>
-            <td class="summary-rate"><input type="number" id="rate2" value="1.5" min="0" step="0.5" oninput="calcSummary()"></td>
-            <td><input type="number" id="hrs2" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
-            <td class="sum-val" id="sum2">0.00</td>
-          </tr>
-          <tr>
-            <td>ค่าล่วงเวลาในวันหยุด 3 เท่า / ชั่วโมง</td>
-            <td class="summary-rate"><input type="number" id="rate3" value="3" min="0" step="0.5" oninput="calcSummary()"></td>
-            <td><input type="number" id="hrs3" step="0.5" placeholder="0.00" oninput="calcSummary()" style="width:90px; border:1.5px solid #e2e4e9; border-radius:6px; height:30px; padding:0 8px; font-family:'Sarabun',sans-serif; text-align:center"></td>
-            <td class="sum-val" id="sum3">0.00</td>
-          </tr>
-          <tr class="total-row">
-            <td colspan="2" style="text-align:right; font-weight:700">รวมทั้งสิ้น</td>
-            <td id="totalSumHrs" class="grand-total">0.00</td>
-            <td id="totalSumBaht" class="grand-total">0.00</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">* กรอกอัตราค่าจ้างต่อชั่วโมงในตารางรายการ เพื่อให้ระบบคำนวณค่าล่วงเวลาในแต่ละแถวโดยอัตโนมัติ</p>
-  </div>
-
-  <div class="card">
-    <div class="section-label">ลงนาม</div>
-    <div class="sign-grid">
-      <div class="sign-box">
-        <label>ผู้ปฏิบัติงาน / ผู้รับเงิน</label>
-        <input class="sign-line" type="text" id="sigEmp" placeholder="ลงชื่อ .....................................">
-        <label>วันที่</label>
-        <input class="sign-line" type="text" id="dateEmp" placeholder="........../............/..........">
-      </div>
-      <div class="sign-box">
-        <label>ผู้อนุมัติ</label>
-        <input class="sign-line" type="text" id="sigApprove" placeholder="ลงชื่อ .....................................">
-        <label>วันที่</label>
-        <input class="sign-line" type="text" id="dateApprove" placeholder="........../............/..........">
-      </div>
-    </div>
-    
-    <div class="actions">
-      <button class="btn-danger" onclick="clearAll()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="3 6 5 6 21 6"/>
-          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-          <line x1="10" y1="11" x2="10" y2="17"/>
-          <line x1="14" y1="11" x2="14" y2="17"/>
-          <path d="M9 6V4h6v2"/>
-        </svg>
-        ล้างข้อมูล
-      </button>
-      <button class="btn-primary" onclick="window.print()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 6 2 18 2 18 9"/>
-          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-          <rect x="6" y="14" width="12" height="8"/>
-        </svg>
-        พิมพ์ / บันทึก PDF
-      </button>
-    </div>
-  </div>
-
 </div>
+
+<script>
+// ฟังก์ชันทำงานตัดหน้ากระดาษและเรียงลำดับแถวต่อให้ทันทีเมื่อผู้ใช้กดสั่งพิมพ์ (Ctrl + P)
+window.onbeforeprint = function() {
+    const maxRowsPerPage = 15; // กำหนดขีดจำกัดสูงสุด 15 รายการต่อ 1 หน้ากระดาษพิมพ์
+    
+    const container = document.getElementById("document-container");
+    const firstPage = container.querySelector(".page-sheet");
+    if (!firstPage) return;
+
+    // เก็บค่าข้อมูลล่าสุดในฟิลด์ที่ผู้ใช้กรอกไว้ (ชื่อ, เดือน, พ.ศ.) ป้องกันค่าหายเมื่อโดน Clone โครงสร้าง
+    const empNameVal = document.getElementById("empName") ? document.getElementById("empName").value : "";
+    const empMonthVal = document.getElementById("empMonth") ? document.getElementById("empMonth").value : "";
+    const empYearVal = document.getElementById("empYear") ? document.getElementById("empYear").value : "";
+    
+    // รวบรวมแถวรายการปฏิบัติงานปัจจุบันทั้งหมดจากตารางหลัก
+    const allRows = Array.from(firstPage.querySelectorAll("#otBody tr"));
+    
+    // ดำเนินการตัดแบ่งหน้าก็ต่อเมื่อมีรายการแถวมากกว่า 15 แถวขึ้นไป
+    if (allRows.length > maxRowsPerPage) {
+        container.innerHTML = ""; // เคลียร์กล่องแสดงผลหน้าจอเดิมเพื่อจัดเรียงอาเรย์แผ่นงานใหม่
+        let rowCounter = 1;
+        
+        for (let i = 0; i < allRows.length; i += maxRowsPerPage) {
+            // สำเนาโครงสร้างหน้าจากหน้าต้นฉบับมาจัดทำแผ่นงานใหม่
+            const newPage = firstPage.cloneNode(true);
+            const tbody = newPage.querySelector("#otBody");
+            tbody.innerHTML = ""; // ล้างข้อมูลตารางสำเนาชั่วคราวเพื่อรอการจัดแถวใหม่
+            
+            // ดึงกลุ่มข้อมูลมาหยอดลงหน้ากระดาษปัจจุบัน (ทีละ 15 แถว)
+            const pageRows = allRows.slice(i, i + maxRowsPerPage);
+            pageRows.forEach(row => {
+                const clonedRow = row.cloneNode(true);
+                
+                // คีย์เวิร์ดหลัก: ตรวจสอบและบังคับเปลี่ยนเลขลำดับแถว (คอลัมน์แรกสุด) ให้วิ่งต่อนับเนื่องไปเรื่อยๆ
+                const firstCell = clonedRow.querySelector("td:first-child");
+                if (firstCell) {
+                    // หากด้านในมีคลาสระบุเลขลำดับหรือตัวเลข ให้แทนที่ด้วยค่าตัวนับแถวปัจจุบัน
+                    if(firstCell.querySelector('.row-num')) {
+                        firstCell.querySelector('.row-num').textContent = rowCounter;
+                    } else {
+                        firstCell.textContent = rowCounter;
+                    }
+                }
+                
+                // คัดลอกค่าล่าสุดในฟิลด์ป้อนข้อมูล (Input/Select) ของทุกเซลล์ตามมาใส่หน้าใหม่
+                const originalInputs = row.querySelectorAll("input, select");
+                const clonedInputs = clonedRow.querySelectorAll("input, select");
+                originalInputs.forEach((input, index) => {
+                    if (clonedInputs[index]) {
+                        clonedInputs[index].value = input.value;
+                    }
+                });
+                
+                tbody.appendChild(clonedRow);
+                rowCounter++;
+            });
+            
+            // หากไม่ใช่หน้าแรก (หน้า 2 เป็นต้นไป) สั่งลบโปรไฟล์ข้อมูลพนักงานด้านบนทิ้งเพื่อไม่ให้กินพื้นที่ส่วนตาราง
+            if (i > 0) {
+                const profileBlock = newPage.querySelector(".top-employee-profile");
+                if (profileBlock) profileBlock.style.display = "none";
+            } else {
+                // คงค่าที่กรอกของหน้าแรกไว้ตามปกติ
+                if (newPage.querySelector("#empName")) newPage.querySelector("#empName").value = empNameVal;
+                if (newPage.querySelector("#empMonth")) newPage.querySelector("#empMonth").value = empMonthVal;
+                if (newPage.querySelector("#empYear")) newPage.querySelector("#empYear").value = empYearVal;
+            }
+            
+            container.appendChild(newPage);
+        }
+    }
+};
+
+// เมื่อกดพิมพ์เสร็จสิ้นหรือยกเลิกการพิมพ์ ให้ทำการรีโหลดเบราว์เซอร์เพื่อคืนหน้าต่างฟอร์มกลับสู่โหมดกรอกข้อมูลปกติ
+window.onafterprint = function() {
+    window.location.reload();
+};
+</script>
+
 <script src="script.js"></script>
 </body>
 </html>
